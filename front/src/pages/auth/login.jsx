@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/use-auth";
+import { useToast } from "@/contexts/toast-context";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
   const { login } = useAuth();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
     try {
       await login(username, password);
       router.push("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      setError(error.message);
     }
   };
 
@@ -45,6 +49,7 @@ export default function Login() {
       >
         Login
       </button>
+      {error && <p className='text-red-500 text-sm mt-2 mx-auto'>{error}</p>}
     </form>
   );
 }

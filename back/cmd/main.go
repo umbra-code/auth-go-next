@@ -5,7 +5,9 @@ import (
 	"api-auth/pkg/database"
 	"api-auth/routes"
 	"log"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +18,14 @@ func main() {
 
 	// Configurar servidor
 	router := gin.Default()
+	// Configurar las reglas de CORS
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"}, // Orígenes permitidos
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		AllowCredentials: true, // Permitir cookies o credenciales
+		MaxAge:           12 * time.Hour,
+	}))
 	routes.SetupRoutes(router)
 
 	// Arrancar servidor
